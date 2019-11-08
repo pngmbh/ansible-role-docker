@@ -5,9 +5,13 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
+- include_tasks: docker-redhat.yml
+  when: ansible_os_family == 'RedHat'
+
 - name: Install Docker.
+  when: ansible_os_family == 'Debian'
   package:
-    name: "{{ docker_package }}"
+    name: "{{ docker_package }}{{ '=' if docker_package_version }}{{ docker_package_version|default(omit) }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
 
